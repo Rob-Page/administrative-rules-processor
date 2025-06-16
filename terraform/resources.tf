@@ -2,8 +2,17 @@ resource "aws_sns_topic" "proposal_envelopes" {
   name = "proposal-envelopes-topic"
 }
 
+resource "aws_sqs_queue" "proposal_envelopes_dlq" {
+  name = "proposal-envelopes-dlq"
+}
+
 resource "aws_sqs_queue" "proposal_envelopes_queue" {
   name = "proposal-envelopes-queue"
+
+  redrive_policy = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.proposal_envelopes_dlq.arn
+    maxReceiveCount     = 5
+  })
 }
 
 resource "aws_sns_topic_subscription" "sqs_subscription" {
@@ -52,7 +61,13 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+resource "aws_iam_policy" "lambda_sqs_policy" {
+  name        = "lambda_sqs_policy"
+  description = "Allow Lambda to access SQS messages."
+  policy      = file("${path.module}/lambda-sqs-policy.json")
+}
+
 resource "aws_iam_role_policy_attachment" "lambda_sqs_policy" {
   role       = aws_iam_role.lambda_exec.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaSQSQueueExecutionRole"
+  policy_arn = aws_iam_policy.lambda_sqs_policy.arn
 }

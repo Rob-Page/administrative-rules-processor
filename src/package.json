@@ -1,0 +1,15 @@
+{
+  "name": "proposal-envelope-lambda",
+  "version": "1.0.0",
+  "description": "Lambda function for processing proposal envelopes from SQS",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "package": "npm run build && zip -j dist/lambda.zip dist/index.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.119",
+    "typescript": "^5.0.0"
+  }
+}

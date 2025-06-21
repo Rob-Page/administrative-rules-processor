@@ -1,5 +1,6 @@
 import { SQSEvent, SQSHandler } from "aws-lambda";
 import { writeJsonToS3 } from "./common/s3";
+import { parseSqsOrSnsMessage } from "./common/sqsSnsParser";
 import { config } from "./config";
 import { ProposalEnvelope } from "./types/ProposalEnvelope";
 import { errorsFoundInProposalEnvelopeShape } from "./validations/validateProposalEnvelope";
@@ -10,7 +11,7 @@ export const handler: SQSHandler = async (event: SQSEvent) => {
       console.info("[Parse] Parsing and validating envelope from SQS record", {
         recordBody: record.body,
       });
-      const envelope: ProposalEnvelope = JSON.parse(record.body);
+      const envelope: ProposalEnvelope = parseSqsOrSnsMessage<ProposalEnvelope>(record.body);
       const errors = errorsFoundInProposalEnvelopeShape(envelope);
       if (errors.length > 0) {
         console.error("[ValidationError] Envelope failed validation", {

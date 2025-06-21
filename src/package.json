@@ -4,12 +4,20 @@
   "description": "Lambda function for processing proposal envelopes from SQS",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "package": "npm run build && zip -j dist/lambda.zip dist/index.js"
+    "build": "tsc --project tsconfig.json && shx mkdir -p dist/node_modules && shx cp -r node_modules dist/ && shx cp package.json dist/",
+    "clean": "shx rm -rf dist",
+    "package": "npm run build && cd dist && npx bestzip lambda.zip index.js node_modules/** package.json",
+    "test": "vitest run"
   },
-  "dependencies": {},
+  "dependencies": {
+    "aws-sdk": "^2.1692.0"
+  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.119",
-    "typescript": "^5.0.0"
+    "@types/node": "^24.0.3",
+    "bestzip": "^2.2.0",
+    "shx": "^0.3.4",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
   }
 }

@@ -3,9 +3,11 @@
     "target": "ES2020",
     "module": "commonjs",
     "outDir": "dist",
+    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["index.ts"]
+  "include": ["index.ts", "test/**/*.ts"],
+  "exclude": ["dist", "**/*.js"]
 }

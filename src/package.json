@@ -1,0 +1,26 @@
+{
+  "name": "proposal-envelope-lambda",
+  "version": "1.0.0",
+  "description": "Lambda function for processing proposal envelopes from SQS",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.json && shx mkdir -p dist/node_modules && shx cp -r node_modules dist/ && shx cp package.json dist/",
+    "clean": "shx rm -rf dist",
+    "package": "npm run build && cd dist && shx rm -rf test *.map && npx bestzip lambda.zip index.js common/** config/** types/** validations/** node_modules/** package.json",
+    "test": "vitest run --exclude test/integration/**",
+    "test:integration": "vitest run test/integration"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1692.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.119",
+    "@types/node": "^24.0.3",
+    "@types/uuid": "^10.0.0",
+    "bestzip": "^2.2.0",
+    "dotenv": "^16.5.0",
+    "shx": "^0.3.4",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}
